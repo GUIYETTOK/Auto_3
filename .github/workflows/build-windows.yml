@@ -22,10 +22,11 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
           python -m pip install pyinstaller
+          python -m pip show pyinstaller
 
       - name: Build EXE
         run: |
-          python -m pyinstaller --onefile --name 견적서자동화 run_app.py
+          python -m PyInstaller --onefile --name 견적서자동화 run_app.py
 
       - name: Prepare bundle
         run: |
