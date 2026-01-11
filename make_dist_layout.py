@@ -15,7 +15,7 @@ def main() -> None:
         shutil.copy2(EXE, DIST / EXE.name)
     (DIST / "DB").mkdir(exist_ok=True)
     (DIST / "output").mkdir(exist_ok=True)
-    print(f"완료: {DIST}")
+    print(f"done: {DIST}")
 
 
 if __name__ == "__main__":
