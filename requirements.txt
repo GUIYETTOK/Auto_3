@@ -1,0 +1,8 @@
+pandas
+openpyxl
+xlrd
+xlutils
+xlwt
+fastapi
+uvicorn
+python-multipart

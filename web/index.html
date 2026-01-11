@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>견적서 자동화</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Nanum+Gothic:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f6f1ea;
+        --ink: #1e1a17;
+        --muted: #6b625a;
+        --card: #fffdf8;
+        --accent: #1f6b68;
+        --accent-soft: #c8e1df;
+        --shadow: 0 18px 45px rgba(30, 26, 23, 0.12);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Nanum Gothic", sans-serif;
+        color: var(--ink);
+        background: radial-gradient(circle at 10% 10%, #efe7dd, #f6f1ea 55%);
+        min-height: 100vh;
+      }
+      header {
+        padding: 32px 8vw 8px;
+      }
+      header h1 {
+        font-family: "Nanum Myeongjo", serif;
+        font-size: clamp(28px, 3.8vw, 42px);
+        margin: 0 0 8px;
+        letter-spacing: 0.02em;
+      }
+      header p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 24px;
+        padding: 24px 6vw 64px;
+      }
+      .primary {
+        grid-column: 1 / -1;
+        display: grid;
+        gap: 20px;
+        padding: 20px;
+        border-radius: 20px;
+        background: linear-gradient(120deg, #f2ede6, #ffffff);
+        box-shadow: var(--shadow);
+      }
+      .flow {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+      .card {
+        background: var(--card);
+        border-radius: 18px;
+        padding: 20px 22px;
+        box-shadow: var(--shadow);
+        animation: fadeIn 0.6s ease both;
+      }
+      .card.subtle {
+        box-shadow: none;
+        border: 1px dashed #d6c9bd;
+        background: #fbf7f2;
+      }
+      .card h2 {
+        font-family: "Nanum Myeongjo", serif;
+        margin: 0 0 12px;
+        font-size: 20px;
+      }
+      label {
+        display: block;
+        margin: 12px 0 6px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      input[type="text"],
+      input[type="file"],
+      input[type="number"],
+      select {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid #d4c8be;
+        background: #fff;
+        font-size: 14px;
+      }
+      button {
+        margin-top: 14px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        border: none;
+        background: var(--accent);
+        color: #fff;
+        font-size: 14px;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+      .btn-primary {
+        padding: 12px 20px;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+      .file-label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 14px;
+        padding: 12px 20px;
+        border-radius: 999px;
+        background: #f3ebe2;
+        color: #4f3a2f;
+        font-size: 15px;
+        font-weight: 700;
+        border: 1px solid #d8cbbc;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+      .file-label:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(79, 58, 47, 0.18);
+      }
+      .file-hidden {
+        display: none;
+      }
+      button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(31, 107, 104, 0.25);
+      }
+      .status {
+        margin-top: 10px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .table-wrap {
+        overflow: visible;
+        margin-top: 12px;
+        border: 1px solid #eadfd4;
+        border-radius: 12px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 0;
+        font-size: 13px;
+      }
+      th,
+      td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #efe4d9;
+        text-align: left;
+      }
+      th {
+        background: var(--accent-soft);
+        color: #134543;
+      }
+      .pill {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #f1e4d8;
+        color: #7a3f18;
+        font-size: 12px;
+      }
+      .card.matching {
+        grid-column: 1 / -1;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @media (max-width: 640px) {
+        header {
+          padding: 24px 6vw 8px;
+        }
+        .layout {
+          padding: 16px 6vw 48px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>주마&도하 견적서 쉽게 만들기_테스트버전_260110</h1>
+      <p>사용방법: 1)견적의뢰서 불러온다 2)단가 매칭 실행 누른다 3)아래 매칭 결과를 보고 단가를 확인 및 수정한다 4)견적서 생성 버튼 누른다.</p>
+    </header>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script type="text/babel">
+      const { useState } = React;
+
+      function App() {
+        const [dbFolder, setDbFolder] = useState("DB");
+        const [dbPath, setDbPath] = useState("DB/estimate.sqlite3");
+        const [outputPath, setOutputPath] = useState("output/견적서_자동.xlsx");
+        const [templatePath, setTemplatePath] = useState("DB/Templet.xlsx");
+        const [inputPath, setInputPath] = useState("DB");
+        const [uploadFile, setUploadFile] = useState(null);
+        const [status, setStatus] = useState("");
+        const [matchItems, setMatchItems] = useState([]);
+        const [overrides, setOverrides] = useState({});
+
+        const postForm = async (url, formData) => {
+          const res = await fetch(url, { method: "POST", body: formData });
+          if (!res.ok) {
+            const text = await res.text();
+            throw new Error(text || "요청 실패");
+          }
+          return res;
+        };
+
+        const handleBuildDb = async () => {
+          try {
+            setStatus("DB 구축 중...");
+            const form = new FormData();
+            form.append("db_folder", dbFolder);
+            form.append("output_db", dbPath);
+            const res = await postForm("/db/build", form);
+            const json = await res.json();
+            setStatus(`DB 구축 완료: ${json.row_count}건 (파일 ${json.file_count}개)`);
+          } catch (err) {
+            setStatus(`오류: ${err.message}`);
+          }
+        };
+
+        const handleMatch = async () => {
+          try {
+            setStatus("단가 매칭 중...");
+            const form = new FormData();
+            form.append("db_path", dbPath);
+            if (uploadFile) {
+              form.append("file", uploadFile);
+            } else {
+              form.append("input_path", inputPath);
+            }
+            const res = await postForm("/requests/match", form);
+            const json = await res.json();
+            setMatchItems(json.items);
+            setOverrides({});
+            setStatus(`매칭 완료: ${json.count}건`);
+          } catch (err) {
+            setStatus(`오류: ${err.message}`);
+          }
+        };
+
+        const deriveOutputName = () => {
+          const normalizeName = (value) =>
+            value ? value.normalize("NFC").replace(/\s+/g, "") : "";
+
+          if (uploadFile && uploadFile.name) {
+            const base = normalizeName(uploadFile.name.split(".")[0]);
+            const prefix = base.slice(0, 4);
+            return `output/견적서_${prefix}.xlsx`;
+          }
+          if (inputPath) {
+            const baseName = inputPath.split("/").pop();
+            if (baseName && baseName.match(/\.xlsx?$|\.xls$/i)) {
+              const base = normalizeName(baseName.split(".")[0]);
+              const prefix = base.slice(0, 4);
+              return `output/견적서_${prefix}.xlsx`;
+            }
+          }
+          return outputPath;
+        };
+
+        const handleGenerate = async () => {
+          try {
+            setStatus("견적서 생성 중...");
+            const autoOutput = deriveOutputName();
+            setOutputPath(autoOutput);
+            const form = new FormData();
+            form.append("db_path", dbPath);
+            form.append("output_path", autoOutput);
+            if (templatePath) {
+              form.append("template_path", templatePath);
+            }
+            if (uploadFile) {
+              form.append("file", uploadFile);
+            } else {
+              form.append("input_path", inputPath);
+            }
+            form.append("overrides", JSON.stringify(overrides));
+            const res = await postForm("/estimates/generate", form);
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = autoOutput.split("/").pop();
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+            setStatus("견적서 생성 완료");
+          } catch (err) {
+            setStatus(`오류: ${err.message}`);
+          }
+        };
+
+        const setOverrideValue = (index, value) => {
+          const next = { ...overrides };
+          if (value === "" || value == null || Number.isNaN(value)) {
+            delete next[index];
+          } else {
+            next[index] = value;
+          }
+          setOverrides(next);
+        };
+
+        const formatCandidate = (candidate) => {
+          if (!candidate) return "";
+          const unit = candidate.단가 != null ? candidate.단가 : "";
+          const a7 = candidate.A7 || "";
+          const date = candidate.견적날짜 || "";
+          return `${unit} | ${a7} ${date}`.trim();
+        };
+
+        const renderRow = (item, idx) => {
+          const overrideValue =
+            overrides[idx] != null ? overrides[idx] : item.단가;
+          const displayUnit =
+            overrideValue != null && overrideValue !== ""
+              ? Number(overrideValue)
+              : "";
+          const quantity =
+            item.수량 != null && item.수량 !== "" ? Number(item.수량) : null;
+          const displayAmount =
+            quantity != null && displayUnit !== "" ? quantity * displayUnit : "";
+          return (
+            <tr key={idx}>
+              <td>{item.품명}</td>
+              <td>{item.규격}</td>
+              <td>{item.단위}</td>
+              <td>{item.수량 != null ? item.수량 : ""}</td>
+              <td>
+                <input
+                  type="number"
+                  value={displayUnit}
+                  onChange={(e) =>
+                    setOverrideValue(
+                      idx,
+                      e.target.value ? Number(e.target.value) : ""
+                    )
+                  }
+                  style={{ width: "96px" }}
+                />
+                {item.후보 && item.후보.length ? (
+                  <select
+                    value=""
+                    onChange={(e) => setOverrideValue(idx, Number(e.target.value))}
+                    style={{ width: "120px", marginLeft: "6px" }}
+                  >
+                    <option value="">선택</option>
+                    {item.후보.map((cand, cIdx) => (
+                      <option key={cIdx} value={cand.단가}>
+                        {formatCandidate(cand)}
+                      </option>
+                    ))}
+                  </select>
+                ) : null}
+              </td>
+              <td>{displayAmount}</td>
+              <td>
+                <span className="pill">{item.상태}</span>
+              </td>
+              <td>{item.매칭방식 || ""}</td>
+              <td>
+                {(item.출처 && item.출처.A7) || ""}{" "}
+                {(item.출처 && item.출처.견적날짜) || ""}
+              </td>
+            </tr>
+          );
+        };
+
+        return (
+          <div className="layout">
+            <section className="primary">
+              <div>
+                <h2>빠른 실행</h2>
+                <div className="status">{status}</div>
+              </div>
+              <div className="flow">
+                <section className="card">
+                  <h2>1. 견적의뢰서 업로드</h2>
+                  <label>견적의뢰서 파일 선택</label>
+                  <label className="file-label" htmlFor="requestFile">
+                    견적의뢰서 불러오기
+                  </label>
+                  <input
+                    id="requestFile"
+                    className="file-hidden"
+                    type="file"
+                    onChange={(e) => setUploadFile(e.target.files[0])}
+                  />
+                  <div className="status">
+                    {uploadFile ? uploadFile.name : "선택된 파일 없음"}
+                  </div>
+                  <button className="btn-primary" onClick={handleMatch}>단가 매칭 실행</button>
+                  <div className="status">{matchItems.length ? `매칭 결과 ${matchItems.length}건` : ""}</div>
+                </section>
+
+                <section className="card">
+                  <h2>2. 견적서 생성</h2>
+                  <label>출력 파일 경로</label>
+                  <input value={outputPath} onChange={(e) => setOutputPath(e.target.value)} />
+                  <label>템플릿 경로 (옵션)</label>
+                  <input value={templatePath} onChange={(e) => setTemplatePath(e.target.value)} />
+                  <button className="btn-primary" onClick={handleGenerate}>견적서 생성</button>
+                  <div className="status">다운로드는 자동으로 시작됩니다.</div>
+                </section>
+
+                <section className="card subtle">
+                  <h2>DB 구축 (가끔)</h2>
+                  <label>DB 폴더 경로</label>
+                  <input value={dbFolder} onChange={(e) => setDbFolder(e.target.value)} />
+                  <label>DB 저장 경로</label>
+                  <input value={dbPath} onChange={(e) => setDbPath(e.target.value)} />
+                  <button onClick={handleBuildDb}>DB 구축 실행</button>
+                </section>
+              </div>
+            </section>
+
+            <section className="card matching">
+              <h2>4. 매칭 결과</h2>
+              <div className="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>품명</th>
+                      <th>규격</th>
+                      <th>단위</th>
+                      <th>수량</th>
+                      <th>단가</th>
+                      <th>금액</th>
+                      <th>상태</th>
+                      <th>매칭방식</th>
+                      <th>출처(A7/날짜)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {matchItems.map(renderRow)}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
